@@ -1,6 +1,6 @@
 // Función para cargar las preguntas desde el archivo JSON
 function loadQuestions() {
-    return fetch('questions.json')
+    return fetch('https://raw.githubusercontent.com/GabrielK84/quiz2-beta/main/questions.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al cargar las preguntas');
