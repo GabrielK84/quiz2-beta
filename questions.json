@@ -1,0 +1,23 @@
+[
+    {
+      "question": "¿Cuál es el objetivo de la evaluación inicial en una emergencia?",
+      "options": [
+        "Determinar el clima",
+        "Evaluar la relación entre las lesiones/síntomas, el daño potencial y el riesgo de tratamiento",
+        "Buscar a la víctima en el lugar del accidente",
+        "Contar el número de personas presentes en la escena"
+      ],
+      "answer": "Evaluar la relación entre las lesiones/síntomas, el daño potencial y el riesgo de tratamiento"
+    },
+    {
+      "question": "¿Qué significa el acrónimo 'AVDI' en la evaluación de la consciencia?",
+      "options": [
+        "Alerta, Verbal, Dolor, Inconsciencia",
+        "Aire, Ventilación, Dolor, Inconsciencia",
+        "Agua, Verbo, Dolor, Inconsciencia",
+        "Accionar, Ver, Dar, Iniciar"
+      ],
+      "answer": "Alerta, Verbal, Dolor, Inconsciencia"
+    }
+  ]
+  
