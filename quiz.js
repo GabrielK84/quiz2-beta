@@ -1,86 +1,87 @@
-let questions = []; // Array para almacenar las preguntas
-let currentQuestionIndex = 0; // Índice de la pregunta actual
-let score = 0; // Puntuación del jugador
-
 // Función para cargar las preguntas desde el archivo JSON
 function loadQuestions() {
-    fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            questions = data;
-            console.log('Preguntas cargadas:', questions);
-        })
-        .catch(error => {
-            console.error('Error al cargar las preguntas:', error);
+    return fetch('questions.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar las preguntas');
+            }
+            return response.json();
         });
 }
 
-// Función para obtener una pregunta aleatoria que no se haya mostrado antes
-function getRandomQuestion() {
-    const remainingQuestions = questions.filter((question, index) => index !== currentQuestionIndex);
-    const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-    return remainingQuestions[randomIndex];
+// Mezclar el orden de las opciones para una pregunta dada
+function shuffleOptions(options) {
+    for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+    }
 }
 
-// Función para mostrar una pregunta en la pantalla
-function displayQuestion(question) {
+// Mezclar el orden de las preguntas
+function shuffleQuestions(questions) {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+}
+
+let questions = []; // Variable para almacenar las preguntas
+let currentQuestion = 0;
+let score = 0;
+
+// Función para inicializar la quiz una vez que las preguntas se hayan cargado
+function initializeQuiz() {
+    loadQuestions()
+        .then(data => {
+            questions = data; // Almacenar las preguntas cargadas
+            shuffleQuestions(questions); // Mezclar las preguntas
+            questions.forEach(question => shuffleOptions(question.options)); // Mezclar opciones para cada pregunta
+            displayQuestion(); // Mostrar la primera pregunta
+        })
+        .catch(error => {
+            console.error(error); // Manejar errores de carga de preguntas
+        });
+}
+
+// Función para mostrar la pregunta actual
+function displayQuestion() {
     const questionElement = document.getElementById('question');
     const optionsElement = document.getElementById('options');
-    questionElement.textContent = question.question;
+    const currentQuestionData = questions[currentQuestion];
+    questionElement.textContent = currentQuestionData.question;
     optionsElement.innerHTML = "";
-    const shuffledOptions = shuffleArray(question.options);
-    shuffledOptions.forEach(option => {
+    currentQuestionData.options.forEach(option => {
         const button = document.createElement('button');
         button.textContent = option;
-        button.onclick = () => checkAnswer(option, question.answer);
+        button.onclick = () => checkAnswer(option);
         optionsElement.appendChild(button);
     });
 }
 
-// Función para mezclar las opciones de una pregunta
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-// Función para comprobar la respuesta del jugador
-function checkAnswer(selectedOption, correctAnswer) {
-    const messageElement = document.getElementById('message');
+// Función para comprobar la respuesta seleccionada por el usuario
+function checkAnswer(selectedOption) {
+    const currentQuestionData = questions[currentQuestion];
     const buttons = document.querySelectorAll('#options button');
     buttons.forEach(button => {
-        button.disabled = true; // Desactivar botones después de seleccionar una opción
-        if (button.textContent === correctAnswer) {
+        button.disabled = true; // Deshabilitar botones después de seleccionar una opción
+        if (button.textContent === currentQuestionData.answer) {
             button.classList.add('correct');
         } else {
             button.classList.add('incorrect');
         }
     });
-    if (selectedOption === correctAnswer) {
+    if (selectedOption === currentQuestionData.answer) {
         score++;
     }
     document.getElementById('score-value').textContent = score;
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        setTimeout(() => {
-            const nextQuestion = getRandomQuestion();
-            displayQuestion(nextQuestion);
-            messageElement.textContent = "";
-        }, 1000); // Retraso de 1 segundo antes de mostrar la próxima pregunta
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+        setTimeout(displayQuestion, 1000); // Retraso de 1 segundo antes de mostrar la siguiente pregunta
     } else {
-        displayEndMessage();
+        document.getElementById('quiz-end-message').style.display = 'block';
+        document.getElementById('quiz-end-message').textContent = "¡Fin del quiz! Tu puntuación es: " + score;
     }
 }
 
-// Función para mostrar el mensaje de fin de la quiz
-function displayEndMessage() {
-    const messageElement = document.getElementById('message');
-    messageElement.textContent = "¡Fin del quiz! Tu puntuación es: " + score;
-}
-
-// Cargar las preguntas al cargar la página
-window.onload = () => {
-    loadQuestions();
-};
+// Inicializar la quiz al cargar la página
+initializeQuiz();
