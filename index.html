@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
-        <h1>Quiz de Primeros Auxilios</h1>
-        <button id="start-btn">Iniciar</button>
-        <div id="quiz">
-            <h2 id="question"></h2>
-            <div id="options"></div>
-            <div id="score">Puntuación: <span id="score-value">0</span></div>
-            <div id="message"></div>
+        <button id="restart-btn" class="reset-btn">Reset</button>
+        <h1>¡Bienvenido al Quiz!</h1>
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <div id="score-container">
+            <span id="score">Puntuación: </span><span id="score-value">0</span>
         </div>
+        <div id="quiz-end-message"></div>
     </div>
     <script src="quiz.js"></script>
 </body>
-
 </html>
